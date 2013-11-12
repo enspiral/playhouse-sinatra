@@ -13,11 +13,10 @@ module Playhouse
       private
 
       def build_sinatra_calls(api_name, command_name)
-        @app.get "/#{api_name}/#{command_name}" do
-          settings.apis[api_name].send(command_name.to_sym, params).to_json
-        end
-        @app.post "/#{api_name}/#{command_name}" do
-          settings.apis[api_name].send(command_name.to_sym, params).to_json
+        [:get, :post].each do |method|
+          @app.send(method, "/#{api_name}/#{command_name}") do
+            settings.apis[api_name].send(command_name.to_sym, params).to_json
+          end
         end
       end
 
