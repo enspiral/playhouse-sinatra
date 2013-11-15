@@ -6,14 +6,15 @@ module Playhouse
         @app = sinatra_app
       end
       def build_command(command)
-        build_sinatra_calls(@api.name, command.method_name)
+        build_sinatra_calls(@api.name, command)
         {"/#{@api.name}/#{command.method_name}" => build_options(command)}
       end
 
       private
 
-      def build_sinatra_calls(api_name, command_name)
-        [:get, :post].each do |method|
+      def build_sinatra_calls(api_name, command)
+        command_name = command.method_name
+        command.http_methods.each do |method|
           @app.send(method, "/#{api_name}/#{command_name}") do
             settings.apis[api_name].send(command_name.to_sym, params).to_json
           end

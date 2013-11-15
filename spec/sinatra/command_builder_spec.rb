@@ -10,7 +10,7 @@ describe Playhouse::Sinatra::CommandBuilder do
     let(:part1) {double('Part', name: 'part_1', required: false, repository: false)}
     let(:part2) {double('Part', name: 'part_2', required: true, repository: false)}
     let(:part3) {double('Part', name: 'part_3', required: false, repository: true)}
-    let(:command) {double('Context', method_name: 'context_name', parts: [part1, part2, part3])}
+    let(:command) {double('Context', method_name: 'context_name', parts: [part1, part2, part3], http_methods: [:get, :post])}
 
     let(:result) {subject.build_command(command)}
 
