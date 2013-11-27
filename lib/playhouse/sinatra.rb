@@ -16,7 +16,20 @@ module Playhouse
       app.set :apis, {}
 
       app.get '/' do
-        settings.plays.to_json
+        str = ""
+        str += "<table>"
+        settings.plays.each do |p| 
+          str += "<tr>"
+          str += "<td>"
+          str += "#{p.keys.join(', ')}  "
+          str += "</td>"
+          str += "<td>"
+          str += ":: #{p.values.join(', ')}"
+          str += "</td>"
+          str += "</tr>"
+        end 
+        str += "</table>"
+        render :html, str 
       end
     end
   end
