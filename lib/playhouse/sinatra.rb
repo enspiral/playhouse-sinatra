@@ -5,7 +5,7 @@ module Playhouse
   module Sinatra
     def add_play play
       theatre = Playhouse::Theatre.new(root: settings.root, environment: settings.environment)
-      theatre.stage do
+      theatre.while_open do
         api = play.new
         settings.apis[api.name] = api
         settings.plays.concat Playhouse::Sinatra::ApiBuilder.build_sinatra_api(api, self)

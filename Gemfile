@@ -5,4 +5,4 @@ gem 'playhouse', git: 'git://github.com/enspiral/playhouse.git'
 gem 'playhouse-sinatra', path: '.'
 gem 'rspec'
 gem 'coveralls'
-
+gem 'sqlite3'

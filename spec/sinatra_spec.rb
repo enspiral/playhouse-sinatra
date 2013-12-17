@@ -7,7 +7,6 @@ class App < Sinatra::Base
 end
 
 class TestPlay < Playhouse::Play
-
 end
 
 describe Playhouse::Sinatra do
