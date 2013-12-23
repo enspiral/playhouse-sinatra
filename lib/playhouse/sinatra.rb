@@ -28,18 +28,19 @@ module Playhouse
       end 
       app.get '/routes' do
         str = ""
-        str += "<table>"
+        str += "<div>"
         routes.each do |k, v| 
-          str += "<tr>"
-          str += "<td>"
-          str += "#{k} : #{v["route"]} "
-          str += "</td>"
-          str += "<td>"
-          str += "requires...etc"
-          str += "</td>"
-          str += "</tr>"
+          str += "<p>"
+          str += "<strong>#{k}</strong> <em>#{v["route"]}</em>"
+          str += "</p>"
+          str += "<p>"
+          str += "params: #{v["params"]}"
+          str += "</p>"
+          str += "<p>"
+          str += "#{v["description"]}"
+          str += "</p>"
         end 
-        str += "</table>"
+        str += "</div>"
         render :html, str 
       end
     end
