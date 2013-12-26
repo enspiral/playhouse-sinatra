@@ -92,6 +92,7 @@ PLATFORMS
 
 DEPENDENCIES
   coveralls
+  multi_json
   playhouse!
   playhouse-sinatra!
   rake

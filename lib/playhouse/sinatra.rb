@@ -27,6 +27,14 @@ module Playhouse
       routes.each do |route|
         route.each do |k, v|
           app.send(k.to_sym, "/#{api.name}/#{v["route"]}") do
+            if ["put", "post", "patch"].include? k
+              json ||= begin
+                MultiJson.load(request.body.read.to_s, symbolize_keys: true)
+              rescue MultiJson::LoadError
+                {}
+              end
+              params.merge! json
+            end
             settings.apis[api.name].send(v["command"].to_sym, params).to_json
           end 
         end
@@ -71,7 +79,7 @@ module Playhouse
         end 
         str += "</table>"
         render :html, str 
-      end
+    end
     end
   end
 end
