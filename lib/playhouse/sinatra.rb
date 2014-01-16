@@ -1,10 +1,11 @@
 require 'playhouse/theatre'
+require 'playhouse/production'
 require 'playhouse/sinatra/api_builder'
 
 module Playhouse
   module Sinatra
-    def add_play play, routes=nil
-      theatre = Playhouse::Theatre.new(root: settings.root, environment: settings.environment)
+    def add_play theatre, play, routes=nil
+      #theatre = Playhouse::Theatre.new(root: settings.root, environment: settings.environment)
       theatre.while_open do
         api = play.new
         settings.apis[api.name] = api

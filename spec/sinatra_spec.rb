@@ -9,6 +9,9 @@ end
 class TestPlay < Playhouse::Play
 end
 
+class TestTheatre < Playhouse::Theatre
+end
+
 describe Playhouse::Sinatra do
   before(:each) do
     stub_theatre
@@ -24,9 +27,11 @@ describe Playhouse::Sinatra do
     end
   end
 
+
   describe 'add_play' do
     before(:each) do
-      App.add_play TestPlay
+      theatre = TestTheatre.new
+      App.add_play theatre, TestPlay
     end
     it 'creates a new theatre for each play' do
       expect(App.settings.apis.size).to eq(1)
