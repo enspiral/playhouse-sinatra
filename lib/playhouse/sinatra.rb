@@ -18,29 +18,45 @@ module Playhouse
 
     #expects routes to be a parsed yaml or equivalent
     #e.g. yaml
-    #get:
-    #  route: 'hello/:world'
-    #  command: hello
+    #-
+    #  get:
+    #    route: 'hello/:world'
+    #    command: hello
+    #    params: '*world'
+    #    description: hello world
     def set_routes(api, app, routes)
-      routes.each do |k, v|
-        app.send(k.to_sym, "/#{api.name}/#{v["route"]}") do
-          settings.apis[api.name].send(v["command"].to_sym, params).to_json
-        end 
+      routes.each do |route|
+        route.each do |k, v|
+          app.send(k.to_sym, "/#{api.name}/#{v["route"]}") do
+            if ["put", "post", "patch"].include? k
+              json ||= begin
+                MultiJson.load(request.body.read.to_s, symbolize_keys: true)
+              rescue MultiJson::LoadError
+                {}
+              end
+              params.merge! json
+            end
+            settings.apis[api.name].send(v["command"].to_sym, params).to_json
+          end 
+        end
       end 
       app.get '/routes' do
         str = ""
-        str += "<table>"
-        routes.each do |k, v| 
-          str += "<tr>"
-          str += "<td>"
-          str += "#{k} : #{v["route"]} "
-          str += "</td>"
-          str += "<td>"
-          str += "requires...etc"
-          str += "</td>"
-          str += "</tr>"
-        end 
-        str += "</table>"
+        routes.each do |route| 
+          route.each do |k, v|
+            str += "<div style='margin-bottom: 25px;'>"
+            str += "<h3 style='margin: 0 0 5px 0; font-weight: normal;'>"
+            str += "<strong style='text-transform: uppercase;'>#{k}</strong> #{v["route"]}"
+            str += "</h3>"
+            str += "<p style='margin: 0 0 5px 0;'>"
+            str += "params: #{v["params"]}"
+            str += "</p>"
+            str += "<p style='margin: 0 0 5px 0;'>"
+            str += "#{v["description"]}"
+            str += "</p>"
+            str += "</div>"
+          end
+        end
         render :html, str 
       end
     end
@@ -64,7 +80,7 @@ module Playhouse
         end 
         str += "</table>"
         render :html, str 
-      end
+    end
     end
   end
 end
