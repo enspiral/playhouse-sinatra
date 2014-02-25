@@ -51,7 +51,7 @@ module Playhouse
               end
               params.merge! json
             end
-            auth = Auth.new session[:current_user]
+            auth = Auth.new current_user: session[:current_user]
             settings.apis[api.name].send("#{v['command']}_with_parent".to_sym, auth, params).to_json
           end 
         end
