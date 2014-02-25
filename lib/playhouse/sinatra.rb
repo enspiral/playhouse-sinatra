@@ -6,7 +6,7 @@ require 'playhouse/sinatra/api_builder'
 module Playhouse
   module Sinatra
     class Auth < Playhouse::Context
-      actor :current_user_id
+      actor :current_user
     end
     
     def add_play theatre, play, routes=nil
@@ -30,6 +30,16 @@ module Playhouse
     #    params: '*world'
     #    description: hello world
     def set_routes(api, app, routes)
+      app.post '/cobudget/set_user' do
+        json ||= begin
+          MultiJson.load(request.body.read.to_s, symbolize_keys: true)
+        rescue MultiJson::LoadError
+          {}
+        end
+        params.merge! json
+        session[:current_user] = params[:current_user]
+        200
+      end
       routes.each do |route|
         route.each do |k, v|
           app.send(k.to_sym, "/#{api.name}/#{v["route"]}") do
@@ -41,7 +51,7 @@ module Playhouse
               end
               params.merge! json
             end
-            auth = Auth.new session['current_user_id']
+            auth = Auth.new session[:current_user]
             settings.apis[api.name].send("#{v['command']}_with_parent".to_sym, auth, params).to_json
           end 
         end
