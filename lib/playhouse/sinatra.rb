@@ -30,7 +30,7 @@ module Playhouse
     #    params: '*world'
     #    description: hello world
     def set_routes(api, app, routes)
-      app.post '/cobudget/set_user' do
+      app.post '/cobudget/users/set_user' do
         json ||= begin
           MultiJson.load(request.body.read.to_s, symbolize_keys: true)
         rescue MultiJson::LoadError
