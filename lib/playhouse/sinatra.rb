@@ -1,9 +1,14 @@
 require 'playhouse/theatre'
+require 'playhouse/context'
 require 'playhouse/production'
 require 'playhouse/sinatra/api_builder'
 
 module Playhouse
   module Sinatra
+    class Auth < Playhouse::Context
+      actor :current_user_id
+    end
+    
     def add_play theatre, play, routes=nil
       #theatre = Playhouse::Theatre.new(root: settings.root, environment: settings.environment)
       theatre.while_open do
@@ -36,7 +41,8 @@ module Playhouse
               end
               params.merge! json
             end
-            settings.apis[api.name].send(v["command"].to_sym, params).to_json
+            auth = Auth.new session['current_user_id']
+            settings.apis[api.name].send("#{v['command']}_with_parent".to_sym, auth, params).to_json
           end 
         end
       end 
